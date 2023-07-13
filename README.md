@@ -7,19 +7,19 @@ Instructions
 
 This section divides the instructions for this Challenge into four steps and an optional fifth step, as follows:
 
-* Step 1: Find unusual patterns in hourly Google search traffic
+* 1: Find unusual patterns in hourly Google search traffic
 
-* Step 2: Mine the search traffic data for seasonality
+* 2: Mine the search traffic data for seasonality
 
-* Step 3: Relate the search traffic to stock price patterns
+* 3: Relate the search traffic to stock price patterns
 
-* Step 4: Create a time series model with Prophet
+* 4: Create a time series model with Prophet
 
-* Step 5 (optional): Forecast revenue by using time series models
+* 5: Forecast revenue by using time series models
 
 The following subsections detail these steps.
 
-## Step 1: Find Unusual Patterns in Hourly Google Search Traffic
+## 1 - Find Unusual Patterns in Hourly Google Search Traffic
 
 The data science manager asks if the Google search traffic for the company links to any financial events at the company. Or, does the search traffic data just present random noise? To answer this question, pick out any unusual patterns in the Google search data for the company, and connect them to the corporate financial events.
 
@@ -29,7 +29,7 @@ To do so, complete the following steps:
 
 2. Calculate the total search traffic for the month, and then compare the value to the monthly median across all months. Did the Google search traffic increase during the month that MercadoLibre released its financial results?
 
-## Step 2: Mine the Search Traffic Data for Seasonality
+## 2 - Mine the Search Traffic Data for Seasonality
 
 Marketing realizes that they can use the hourly search data, too. If they can track and predict interest in the company and its platform for any time of day, they can focus their marketing efforts around the times that have the most traffic. This will get a greater return on investment (ROI) from their marketing budget.
 
@@ -41,7 +41,7 @@ To that end, you want to mine the search traffic data for predictable seasonal p
 
 3. Group the search data by the week of the year. Does the search traffic tend to increase during the winter holiday period (weeks 40 through 52)?
 
-## Step 3: Relate the Search Traffic to Stock Price Patterns
+## 3 - Relate the Search Traffic to Stock Price Patterns
 
 You mention your work on the search traffic data during a meeting with people in the finance group at the company. They want to know if any relationship between the search data and the company stock price exists, and they ask if you can investigate.
 
@@ -59,7 +59,7 @@ To do so, complete the following steps:
 
 4. Review the time series correlation, and then answer the following question: Does a predictable relationship exist between the lagged search traffic and the stock volatility or between the lagged search traffic and the stock price returns?
 
-## Step 4: Create a Time Series Model with Prophet
+## 4 - Create a Time Series Model with Prophet
 
 Now, you need to produce a time series model that analyzes and forecasts patterns in the hourly search data. To do so, complete the following steps:
 
@@ -75,7 +75,7 @@ Now, you need to produce a time series model that analyzes and forecasts pattern
 
     * What's the lowest point for search traffic in the calendar year?
 
-## Step 5 (Optional): Forecast Revenue by Using Time Series Models
+## 5 - Forecast Revenue by Using Time Series Models
 
 A few weeks after your initial analysis, the finance group follows up to find out if you can help them solve a different problem. Your fame as a growth analyst in the company continues to grow!
 
