@@ -1,18 +1,18 @@
-# MecardoLibre_Financial_Analysis
+# MercadoLibre_Financial_Analysis
 
 ## Overview
- With over 200 million users, MercadoLibre is the most popular e-commerce site in Latin America. As a growth analyst at [MercadoLibre](http://investor.mercadolibre.com/investor-relations). one is tasked with analyzing the company's financial and user data in clever ways to make the company grow. So, this analysis is target to find out if the ability to predict search traffic can translate into the ability to successfully trade the stock. 
+ With over 200 million users, MercadoLibre is the most popular e-commerce site in Latin America. As an analyst at [MercadoLibre](http://investor.mercadolibre.com/investor-relations). one is tasked with analyzing the company's financial and user data to make the company grow. So, this analysis is target to find out if the ability to predict search traffic can translate into the ability to successfully trade the stock and financial budget. 
 
- To do so, the task is seperated into the following steps:
-* 1: Find unusual patterns in hourly Google search traffic
+ To do so, the analyses are including the followings:
+* 1: Find unusual patterns in hourly Google search traffic - Data Science Team
 
-* 2: Mine the search traffic data for seasonality
+* 2: Mine the search traffic data for seasonality - Marketing Team
 
-* 3: Relate the search traffic to stock price patterns
+* 3: Relate the search traffic to stock price patterns - Finance Team
 
-* 4: Create a time series model with Prophet
+* 4: Create a time series model with Prophet - Data Science Team
 
-* 5: Forecast revenue by using time series models
+* 5: Forecast revenue by using time series models - Finance Team
 
 
 ## Results: 
@@ -81,50 +81,119 @@ Search data is potentially helpful for Marketing team, too. If they can track an
 
 ### 3 - Relate the Search Traffic to Stock Price Patterns
 
-You mention your work on the search traffic data during a meeting with people in the finance group at the company. They want to know if any relationship between the search data and the company stock price exists, and they ask if you can investigate.
+Discover if any relationship between the search data and the company stock price exists for finance group. 
 
 To do so, complete the following steps:
 
-1. Read in and plot the stock price data. Concatenate the stock price data to the search data in a single DataFrame.
+- Read in and plot the stock price data. Concatenate the stock price data to the search data in a single DataFrame.
+    ```
+    df_mercado_stock = pd.read_csv("mercado_stock_price.csv",index_col="date",parse_dates=True,infer_datetime_format=True)
+    ```
+    ```
+    mercado_stock_trends_df = pd.concat([df_mercado_stock,df_mercado_trends], axis=1).dropna()
+    ```
 
-2. Market events emerged during the year of 2020 that many companies found difficult. But, after the initial shock to global financial markets, new customers and revenue increased for e-commerce platforms. Slice the data to just the first half of 2020 (`2020-01` to `2020-06` in the DataFrame), and then use hvPlot to plot the data. Do both time series indicate a common trend that’s consistent with this narrative?
+    ![mercado_stock_trends_df](Resources/mercado_stock_trends_df.png)
+    ![df_mercado_stock_hvplot](Resources/df_mercado_stock_hvplot.png)
 
-3. Create a new column in the DataFrame named “Lagged Search Trends” that offsets, or shifts, the search traffic by one hour. Create two additional columns:
+- Market events emerged during the year of 2020 that many companies found difficult. But, after the initial shock to global financial markets, new customers and revenue increased for e-commerce platforms. Slice the data to just the first half of 2020 (`2020-01` to `2020-06` in the DataFrame), and then use hvPlot to plot the data. 
+    ![first_half_2020_search_hvplot](Resources/first_half_2020_search_hvplot.png)
+    ![first_half_2020_stock_hvplot](Resources/first_half_2020_stock_hvplot.png)
 
-    * “Stock Volatility”, which holds an exponentially weighted four-hour rolling average of the company’s stock volatility
 
-    * “Hourly Stock Return”, which holds the percent change of the company's stock price on an hourly basis
+- Insights:
+    > Do both time series indicate a common trend that’s consistent with this narrative?
+     
+        1. In fact, the evidence of a common trend between search activity and stock price is pretty limited. However, for the lowest points of stock price, which appears in late March through early April, did coincide with the lower search activities.
+        2. Searches turned more activate later, brought up the stock price since late April. The stock price keep onwarding, the search activities remained stable.
+        3. There is spike on search pattern in May-05-2020, almost at the same time, stock price had a steep slope growth. This time aligned with the date of company's quarterly report release to the public. The peak of searching was a couple of hours later than the stock price spike. This might indicate that the Google search pattern can predict the stock price. An alternative explanation might be that people just search for more information about the company before its earnings release announcement. For this hypothesis, we need to do more time series analysis to see which explanation best fits the data.
 
-4. Review the time series correlation, and then answer the following question: Does a predictable relationship exist between the lagged search traffic and the stock volatility or between the lagged search traffic and the stock price returns?
+-  Create a new column in the DataFrame named “Lagged Search Trends” that offsets, or shifts, the search traffic by one hour. Create two additional columns:
+
+    
+    **Hourly Stock Return** holds the percent change of the company's stock price on an hourly basis
+    **Stock Volatility** holds an exponentially weighted four-hour rolling average of the company’s stock volatility
+
+    ```
+    mercado_stock_trends_df['Lagged Search Trends'] = mercado_stock_trends_df['Search Trends'].shift(1)
+    mercado_stock_trends_df['Hourly Stock Return'] = mercado_stock_trends_df['close'].pct_change()
+    mercado_stock_trends_df['Stock Volatility'] = mercado_stock_trends_df['close'].pct_change().rolling(window=4).std()
+    ```
+    ![mercado_stock_trends_df_plus](Resources/mercado_stock_trends_df_plus.png)
+
+- Review the time series correlation to discover the relationship between variables.
+    ![mercado_stock_trends_df_corr](Resources/mercado_stock_trends_df_corr.png)
+
+- Insights:
+    > Does a predictable relationship exist between the lagged search traffic and the stock volatility or between the lagged search traffic and the stock price returns?
+
+        1. There is a slightly negative correlation between searches for the company and its subsequent stock volatility (-0.148938). More searches tend to indicate less near-term hourly stock risk for the company.
+        2. There is positive correlation between search activity in an hour and stock returns in the next. As search activity goes up, stock return goes up in the next hour. But this correlation(0.017929) is very weak though. It might be chances that it is random. Search trends is hard to predict the market.
 
 ### 4 - Create a Time Series Model with Prophet
 
-Now, you need to produce a time series model that analyzes and forecasts patterns in the hourly search data. To do so, complete the following steps:
+Produce a time series model that analyzes and forecasts patterns in the hourly search data. 
 
-1. Set up the Google search data for a Prophet forecasting model.
+- Set up the Google search data for a Prophet forecasting model.
+    ```
+    mercado_prophet_df = df_mercado_trends.reset_index()
+    mercado_prophet_df.columns=['ds','y']
+    mercado_prophet_df = mercado_prophet_df.dropna()
+    ```
 
-2. After estimating the model, plot the forecast. How's the near-term forecast for the popularity of MercadoLibre?
+- Create Prophet model, plot the forecast. 
+    ```
+    model_mercado_trends = Prophet()
+    model_mercado_trends.fit(mercado_prophet_df)
+    future_mercado_trends = model_mercado_trends.make_future_dataframe(periods=2000, freq='H') 
+    forecast_mercado_trends = model_mercado_trends.predict(future_mercado_trends)
+    ```
+    ![model_mercado_trends](Resources/model_mercado_trends.png)
 
-3. Plot the individual time series components of the model to answer the following questions:
 
-    * What time of day exhibits the greatest popularity?
+- Plot the individual time series components of the model to reveal the patterns.
+    ```
+    forecast_mercado_trends[['yhat', 'yhat_lower', 'yhat_upper']].iloc[-2000:,:].hvplot()
+    model_mercado_trends.plot_components(forecast_mercado_trends)
+    ```
+    ![forecast_mercado_trends](Resources/forecast_mercado_trends.png)
+    ![figures_mercado_trends](Resources/figures_mercado_trends_ds.png)
 
-    * Which day of the week gets the most search traffic?
+- Insights:
+    > How's the near-term forecast for the popularity of MercadoLibre?
+        Near-term forecast shows that the popularity of MercadoLibre will level off through the rest of 2020. Predicted data starts from the beginning of September 2020, the average of search activity will be around 85. Lower than historical average data roughly about 90.
+    
+    > What time of day exhibits the greatest popularity?
+        In the late evenings (20:00 - 3:00) tends to be the peak of searching popularity.
 
-    * What's the lowest point for search traffic in the calendar year?
+    > Which day of the week gets the most search traffic?
+        Tuesday through Thursday get higher search traffic, Tuesday is the most busy day throughout across the week.
+
+    > What's the lowest point for search traffic in the calendar year?
+        In the middle of October, the last week of the year and the first week of the year , search traffic get the lowest periods. The October low could be a holiday effect.
+
 
 ### 5 - Forecast Revenue by Using Time Series Models
 
-A few weeks after your initial analysis, the finance group follows up to find out if you can help them solve a different problem. Your fame as a growth analyst in the company continues to grow!
+With sales data, it is possible to make a forecast of the total sales for the next quarter for the finance team need. This will dramatically increase their ability to plan budgets and to help guide expectations for the company investors.
 
-Specifically, the finance group wants a forecast of the total sales for the next quarter. This will dramatically increase their ability to plan budgets and to help guide expectations for the company investors.
 
-To do so, complete the following steps:
+- Read in the daily historical sales (that is, revenue) figures, and then apply a Prophet model to the data.
+    ```
+    df_mercado_sales = pd.read_csv("mercado_daily_revenue.csv",index_col='date',parse_dates=True,infer_datetime_format=True)
+    ```
+    ![df_mercado_sales_hvplot](Resources/df_mercado_sales_hvplot.png)
+    ![mercado_sales_prophet_model_plot](Resources/mercado_sales_prophet_model_plot.png)
 
-1. Read in the daily historical sales (that is, revenue) figures, and then apply a Prophet model to the data.
+- Interpret the model output to identify any seasonal patterns in the company's revenue. For example, what are the peak revenue days? (Mondays? Fridays? Something else?)
+    ![mercado_sales_prophet_model](Resources/mercado_sales_prophet_model.png)
 
-2. Interpret the model output to identify any seasonal patterns in the company's revenue. For example, what are the peak revenue days? (Mondays? Fridays? Something else?)
+- Produce a sales forecast for the finance group. 
+    ![mercado_sales_forecast_quarter](Resources/mercado_sales_forecast_quarter.png)
+    ![mercado_sales_forecast_quarter_sum](Resources/mercado_sales_forecast_quarter_sum.png)
 
-3. Produce a sales forecast for the finance group. Give them a number for the expected total sales in the next quarter. Include the best- and worst-case scenarios to help them make better plans.
-
+- Insights:
+    > How much will be the expected total sales in the next quarter? What's the suggestion for finance team to help them make better plans? 
+        The total sales next quarter is expected between  888− 1052 Million. Most likely to be $970 Million. That means if the finance team doesn't want to raise debt next quarter, they can make sure expenditures next quarter don't outpace the amount of revenue anticipated under the worst case 888 million USD. This would ensure that revenue received is sufficient to cover costs, without having to seek outside financing.
+        
 ### Summary
