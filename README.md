@@ -161,15 +161,19 @@ Produce a time series model that analyzes and forecasts patterns in the hourly s
 
 - Insights:
     > How's the near-term forecast for the popularity of MercadoLibre?
+
         Near-term forecast shows that the popularity of MercadoLibre will level off through the rest of 2020. Predicted data starts from the beginning of September 2020, the average of search activity will be around 85. Lower than historical average data roughly about 90.
     
     > What time of day exhibits the greatest popularity?
+
         In the late evenings (20:00 - 3:00) tends to be the peak of searching popularity.
 
     > Which day of the week gets the most search traffic?
+
         Tuesday through Thursday get higher search traffic, Tuesday is the most busy day throughout across the week.
 
     > What's the lowest point for search traffic in the calendar year?
+
         In the middle of October, the last week of the year and the first week of the year , search traffic get the lowest periods. The October low could be a holiday effect.
 
 
@@ -194,6 +198,7 @@ With sales data, it is possible to make a forecast of the total sales for the ne
 
 - Insights:
     > How much will be the expected total sales in the next quarter? What's the suggestion for finance team to help them make better plans? 
-        The total sales next quarter is expected between  888− 1052 Million. Most likely to be $970 Million. That means if the finance team doesn't want to raise debt next quarter, they can make sure expenditures next quarter don't outpace the amount of revenue anticipated under the worst case 888 million USD. This would ensure that revenue received is sufficient to cover costs, without having to seek outside financing.
+        
+        The total sales next quarter is expected between  $888−1052 Million. Most likely to be $970 Million. That means if the finance team doesn't want to raise debt next quarter, they can make sure expenditures next quarter don't outpace the amount of revenue anticipated under the worst case 888 million USD. This would ensure that revenue received is sufficient to cover costs, without having to seek outside financing.
         
 ### Summary
