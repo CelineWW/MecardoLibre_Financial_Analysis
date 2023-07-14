@@ -1,4 +1,4 @@
-# MercadoLibre_Financial_Analysis
+# MercadoLibre_Financial_Forecast
 
 ## Overview
  With over 200 million users, MercadoLibre is the most popular e-commerce site in Latin America. As an analyst at [MercadoLibre](http://investor.mercadolibre.com/investor-relations). one is tasked with analyzing the company's financial and user data to make the company grow. So, this analysis is target to find out if the ability to predict search traffic can translate into the ability to successfully trade the stock and financial budget. 
